@@ -1,0 +1,22 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: booksvc-deployment
+spec:
+  selector:
+    matchLabels:
+      app: booksvc
+  replicas: 4
+  template:
+    metadata:
+      labels:
+        app: booksvc
+        dev: mcclayac
+        devname: Anthony_McClay
+        version: v0.0.1
+    spec:
+      containers:
+        - name: booksvc
+          image: mcclayac/booksvc:v0.0.1
+          ports:
+            - containerPort: 7070

@@ -1,0 +1,12 @@
+
+
+
+
+
+#!/bin/bash
+#echo "Bash version ${BASH_VERSION}..."
+for i in {0..10000}
+  do
+      curl -XPOST -d'{"s":"hello, world"}' localhost:8080/uppercase
+ done
+
