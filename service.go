@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"log"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -14,23 +15,37 @@ type StringService interface {
 
 type stringService struct{}
 
+type HostService interface {
+	GetHostName() string
+}
+
+// COncrete Implementation
+type hostService struct{}
+
 type BookService interface {
 	Books() map[string]Book
-	GetBook(int)  (Book, error)
+	GetBook(int) (Book, error)
 	SetBook(Book) error
 }
+
 // bookService is a concrete implementation of BookService
 type bookService struct{}
 
 type Book struct {
-	ID int
-	Title string
-	Author string
-	Date string
+	ID        int
+	Title     string
+	Author    string
+	Date      string
 	Publisher string
 }
-var bookmap map[string]Book  = make(map[string]Book)
 
+var bookmap map[string]Book = make(map[string]Book)
+
+func (hostService) GetHostName() string {
+	version := "version v0.0.4 = "
+	hostname, _ := os.Hostname()
+	return version + hostname
+}
 
 func (stringService) Uppercase(s string) (string, error) {
 	if s == "" {
@@ -43,18 +58,17 @@ func (stringService) Count(s string) int {
 	return len(s)
 }
 
-
 func (bookService) Books() map[string]Book {
 	if len(bookmap) == 0 {
 		log.Println("Init Books")
-		bookmap["1"]=Book{
-			ID:1,
-			Title:"A Spell for Chameleon",
-			Author:"Piers Anthony",
-			Date: "1977",
-			Publisher:" Del Rey ",
+		bookmap["1"] = Book{
+			ID:        1,
+			Title:     "A Spell for Chameleon",
+			Author:    "Piers Anthony",
+			Date:      "1977",
+			Publisher: " Del Rey ",
 		}
-		bookmap["2"]=Book{
+		bookmap["2"] = Book{
 			ID:        2,
 			Title:     "The Source of Magic",
 			Author:    "Piers Anthony",
@@ -65,8 +79,8 @@ func (bookService) Books() map[string]Book {
 	return bookmap
 }
 
-func (bookService) SetBook( book Book) error {
-	id  := strconv.Itoa(book.ID)
+func (bookService) SetBook(book Book) error {
+	id := strconv.Itoa(book.ID)
 	bookmap[id] = book
 	return nil
 }
@@ -78,7 +92,5 @@ func (bookService) GetBook(id int) (Book, error) {
 	return book, nil
 }
 
-
 // ErrEmpty is returned when input string is empty
 var ErrEmpty = errors.New("Empty string")
-

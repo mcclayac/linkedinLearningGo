@@ -5,8 +5,21 @@
 
 #!/bin/bash
 #echo "Bash version ${BASH_VERSION}..."
-for i in {0..10000}
+for i in {0..100}
   do
-      curl -XPOST -d'{"s":"hello, world"}' localhost:8080/uppercase
+      curl -XPOST -d'{"s":"hello, world"}' localhost:7070/uppercase
  done
 
+curl -XPOST -d'{"id":1}' http://192.168.99.100:32651/book | jq
+
+
+docker build . -t mcclayac/booksvc:v0.0.2
+
+k8 apply -f ./
+
+#!/bin/bash
+#echo "Bash version ${BASH_VERSION}..."
+for i in {0..100}
+  do
+      curl -XPOST -d'{"s":"3"}' localhost:7070/hostname
+ done

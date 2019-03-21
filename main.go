@@ -38,7 +38,7 @@ func main() {
 	var svc StringService
 	svc = stringService{}
 	bookSvc := bookService{}
-
+	hostSvc := hostService{}
 	svc = loggingMiddleware{logger, svc}
 	svc = instrumentingMiddleware{requestCount, requestLatency, countResult, svc}
 
@@ -73,7 +73,11 @@ func main() {
 		encodeResponse,
 	)
 	//--------------------------------
-
+	hostHandler := httptransport.NewServer(
+		makeHostEndpoint(hostSvc),
+		decodeHostRequest,
+		encodeResponse,
+	)
 
 	http.Handle("/uppercase", uppercaseHandler)
 	http.Handle("/count", countHandler)
@@ -84,6 +88,8 @@ func main() {
 	http.Handle("/book", bookHandler)
 	http.Handle("/setbook", setbookHandler)
 
+	// ---------------------------------------
+	http.Handle("/hostname", hostHandler)
 
 	logger.Log("msg", "HTTP", "addr", ":7070")
 	logger.Log("err", http.ListenAndServe(":7070", nil))

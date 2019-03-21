@@ -13,10 +13,13 @@ spec:
         app: booksvc
         dev: mcclayac
         devname: Anthony_McClay
-        version: v0.0.1
+        version: v0.0.4
     spec:
       containers:
         - name: booksvc
-          image: mcclayac/booksvc:v0.0.1
+          image: mcclayac/booksvc:v0.0.4
           ports:
             - containerPort: 7070
+      nodeSelector:
+        storageType: ssd
+

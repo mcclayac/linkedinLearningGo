@@ -36,7 +36,7 @@ func makeBooksEndpoint(svc BookService) endpoint.Endpoint {
 		//if err != nil {
 		//	return booksResponse{Books:b}, nil
 		//}
-		return booksResponse{Books:b}, nil
+		return booksResponse{Books: b}, nil
 	}
 }
 
@@ -48,12 +48,11 @@ func makeBookEndpoint(svc BookService) endpoint.Endpoint {
 		//book, err := svc.GetBook(id)
 		book, err := svc.GetBook(req.ID)
 		if err != nil {
-			return getBookResponse{Book:book}, nil
+			return getBookResponse{Book: book}, nil
 		}
-		return getBookResponse{Book:book}, nil
+		return getBookResponse{Book: book}, nil
 	}
 }
-
 
 func makeSetBookEndpoint(svc BookService) endpoint.Endpoint {
 	return func(_ context.Context, request interface{}) (interface{}, error) {
@@ -63,15 +62,26 @@ func makeSetBookEndpoint(svc BookService) endpoint.Endpoint {
 		//book, err := svc.GetBook(id)
 		err := svc.SetBook(req.Book)
 		if err != nil {
-			return setBookResponse{ok:true}, nil
+			return setBookResponse{ok: true}, nil
 		}
-		return setBookResponse{ok:true}, nil
+		return setBookResponse{ok: true}, nil
 	}
 }
 
-
-
-
+func makeHostEndpoint(svc HostService) endpoint.Endpoint {
+	return func(_ context.Context, request interface{}) (interface{}, error) {
+		//req := request.(setBookRequest)
+		//idString := req.ID
+		//id, _  := strconv.Atoi(idString)
+		//book, err := svc.GetBook(id)
+		hostname := svc.GetHostName()
+		//err := nil
+		//if err != nil {
+		//	return hostResponse{HostName:hostname}, nil
+		//}
+		return hostResponse{HostName: hostname}, nil
+	}
+}
 
 func decodeUppercaseRequest(_ context.Context, r *http.Request) (interface{}, error) {
 	var request uppercaseRequest
@@ -88,7 +98,6 @@ func decodeCountRequest(_ context.Context, r *http.Request) (interface{}, error)
 	}
 	return request, nil
 }
-
 
 //----------------------
 func decodeBooksRequest(_ context.Context, r *http.Request) (interface{}, error) {
@@ -114,7 +123,16 @@ func decodeSetBookRequest(_ context.Context, r *http.Request) (interface{}, erro
 	}
 	return request, nil
 }
+
 // -----------------------------------------
+//----------------------
+func decodeHostRequest(_ context.Context, r *http.Request) (interface{}, error) {
+	var request hostRequest
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+		return nil, err
+	}
+	return request, nil
+}
 
 func encodeResponse(_ context.Context, w http.ResponseWriter, response interface{}) error {
 	return json.NewEncoder(w).Encode(response)
@@ -137,9 +155,7 @@ type countResponse struct {
 	V int `json:"v"`
 }
 
-
 //------------------------------
-
 
 type getBookRequest struct {
 	ID int `json:"id"`
@@ -157,11 +173,16 @@ type setBookResponse struct {
 	ok bool `json:"ok"`
 }
 
-
 type booksRequest struct {
-
 }
 
 type booksResponse struct {
-	Books 	map[string]Book `json:"books"`
+	Books map[string]Book `json:"books"`
+}
+
+type hostRequest struct {
+}
+
+type hostResponse struct {
+	HostName string `json:"hostname"`
 }
